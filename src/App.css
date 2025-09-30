@@ -1,0 +1,442 @@
+.sidbar {
+  height: 100vh;
+  max-width: 35%;
+  width: 100%;
+  background: #038D4F;
+  color: white;
+  padding: 50px 30px;
+  overflow-y: scroll;
+
+}
+
+.sidbar::-webkit-scrollbar {
+  display: none;
+}
+
+.MainContent {
+  max-width: 65%;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.footeer {
+  height: 107px;
+  display: flex;
+  align-items: center;
+  padding: 0 60px;
+}
+
+.footeer p {
+  font-size: 25px;
+  margin-bottom: 0;
+  line-height: 100%;
+}
+
+.card {
+  flex: 0 0 calc(100% / 3 - 17px);
+  /* 3 cards per row by default */
+  scroll-snap-align: start;
+  border: 1px solid #727272;
+  padding: 30px;
+  border-radius: 0;
+  display: flex;
+  height: 100%;
+  overflow-y: scroll;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+}
+
+.victimName {
+  color: #038D4F;
+}
+
+.victimName p {
+  margin: 0;
+  font-size: 22px;
+  text-transform: uppercase;
+  line-height: 100%;
+}
+
+.cardss {
+  display: flex;
+  gap: 25px;
+  overflow-x: auto;
+  /* flex-wrap: wrap; */
+  width: 100%;
+  /* scroll-snap-type: x mandatory;
+  scroll-behavior: smooth; */
+}
+
+.cardss::-webkit-scrollbar,
+.card::-webkit-scrollbar {
+  display: none;
+}
+
+.lightt {
+  font-size: 14.5px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.boold {
+  font-size: 14.5px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.card img {
+  mix-blend-mode: luminosity;
+}
+
+.timmmee {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 100%;
+}
+
+.morningg img {
+  width: 73px;
+  mix-blend-mode: luminosity;
+}
+
+.morningg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.duaa {
+  display: flex;
+  gap: 50px;
+  width: auto;
+}
+
+.duaa p {
+  margin-bottom: 0;
+  font-weight: 700;
+  font-size: 35px;
+  line-height: 100%;
+
+}
+
+.duaa span {
+  line-height: 100%;
+  font-size: 12px;
+}
+
+.daateee {
+  line-height: 100%;
+  font-size: 19px;
+}
+
+.mainHeader {
+  padding: 37px 50px 33px;
+  height: 138px;
+  color: #000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.DeathData {
+  height: calc(100vh - 245px);
+  background: #e7e7e7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px 12% 40px;
+  overflow-y: auto;
+  gap: 35px;
+}
+
+.PageHome {
+  display: flex;
+  min-width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+img.InnaLillah {
+  height: 95px;
+  margin: 0 auto;
+}
+
+.heads {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+}
+
+.heads img {
+  width: 22%;
+}
+
+.heads h3 {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 42px;
+  margin-bottom: 0;
+}
+
+.listing {
+  margin-top: 30px;
+}
+
+.daata {
+  padding: 18px 30px;
+  border-bottom: 1px solid #FFFFFF52;
+}
+
+.daata p,
+.daata h3 {
+  font-size: 24px;
+  margin-bottom: 0;
+  line-height: 32px;
+}
+
+.daata h3 {
+  font-weight: 700;
+  /* margin-top: 7px; */
+}
+
+/* @media screen and (min-width: 1921px) {
+  .card {
+    flex: 0 0 calc(100% / 4 - 19px); 
+  }
+} */
+
+@media screen and (min-width: 1921px) {
+  img.InnaLillah {
+    height: 105px;
+  }
+
+  .victimName p {
+    font-size: 26px;
+  }
+
+  .timmmee,
+  .daata p,
+  .daata h3 {
+    font-size: 27px;
+  }
+
+  .daata h3 {
+    margin-top: 7px !important;
+  }
+
+  .duaa p {
+    font-size: 38px;
+  }
+
+  .duaa span {
+    font-size: 14px;
+  }
+
+  .daateee {
+    font-size: 21px;
+  }
+
+  .lightt,
+  .boold {
+    font-size: 17px;
+  }
+
+  .footeer p {
+    font-size: 28px;
+  }
+}
+
+@media screen and (min-width: 2600px) {
+  img.InnaLillah {
+    height: 150px;
+  }
+
+  .victimName p {
+    font-size: 34px;
+  }
+
+  .timmmee,
+  .daata p,
+  .daata h3 {
+    font-size: 32px;
+  }
+
+  .card {
+    gap: 25px;
+  }
+
+  .daata {
+    padding: 25px 45px;
+  }
+
+  .daata h3 {
+    margin-top: 12px !important;
+  }
+
+  .duaa p {
+    font-size: 44px;
+  }
+
+  .duaa span {
+    font-size: 21px;
+  }
+
+  .daateee {
+    font-size: 25px;
+  }
+
+  .lightt,
+  .boold {
+    font-size: 22px;
+  }
+
+  .footeer p {
+    font-size: 34px;
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  img.InnaLillah {
+    height: 85px;
+  }
+
+  .victimName p {
+    font-size: 17px;
+  }
+
+  .timmmee {
+    font-size: 21px;
+  }
+
+  .daata p,
+  .daata h3 {
+    font-size: 20px;
+  }
+
+  .morningg img {
+    height: 65px;
+  }
+
+  .heads h3 {
+    font-size: 34px;
+  }
+
+  .duaa p {
+    font-size: 29px;
+  }
+
+  .duaa span {
+    font-size: 11px;
+  }
+
+  .footeer {
+    height: 85px;
+    padding: 0 40px;
+  }
+
+  .daateee {
+    font-size: 15px;
+  }
+
+  .lightt,
+  .boold {
+    font-size: 12px;
+  }
+
+  .footeer p {
+    font-size: 22px;
+  }
+
+  .DeathData {
+    height: calc(100vh - 204px);
+    padding: 40px 10% 30px;
+    gap: 30px;
+  }
+
+  .mainHeader {
+    padding: 30px 35px 22px;
+    height: auto;
+    color: #000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 1370px) {
+  img.InnaLillah {
+    height: 70px;
+  }
+
+  .victimName p {
+    font-size: 15px;
+  }
+
+  .timmmee {
+    font-size: 19px;
+  }
+
+  .daata p,
+  .daata h3 {
+    font-size: 17px;
+  }
+
+  .morningg img {
+    height: 60px;
+    width: 60px;
+  }
+
+  .heads h3 {
+    font-size: 31px;
+  }
+
+  .duaa p {
+    font-size: 29px;
+  }
+
+  .duaa span {
+    font-size: 11px;
+  }
+
+  .footeer {
+    height: auto;
+    padding: 25px 40px;
+  }
+
+  .daateee {
+    font-size: 15px;
+  }
+
+  .lightt,
+  .boold {
+    font-size: 11px;
+  }
+
+  .footeer p {
+    font-size: 20px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+
+  .DeathData {
+    height: calc(100vh - 182px);
+    padding: 40px 10% 30px;
+    gap: 30px;
+  }
+
+  .mainHeader {
+    padding: 30px 35px 22px;
+    height: auto;
+  }
+
+  .daata {
+    padding: 14px 25px;
+  }
+}
