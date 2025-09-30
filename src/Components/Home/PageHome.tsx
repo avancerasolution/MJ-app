@@ -7,7 +7,7 @@ const PageHome = () => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/v1/funerals");
+      const res = await fetch("https://mayyatc.org/api/v1/funerals");
       const json = await res.json();
       setData(json);
     } catch (err) {
