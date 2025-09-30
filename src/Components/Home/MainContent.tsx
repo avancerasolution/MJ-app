@@ -6,6 +6,11 @@ import Header from "./Header";
 import InnaLillah from "./../../assets/InnaLillah.png";
 import VictimCard from "./VictimCard";
 import Footer from "./Footer";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface RawObituary {
   JAMATKHANA: string;
@@ -64,9 +69,19 @@ const MainContent: React.FC<MainContentProps> = ({ data }) => {
             <img src={InnaLillah} alt="InnaLillah" className="InnaLillah" />
           )}
           <div className="cardss">
-            {obituaryData.map((item: Obituary, i: number) => (
-              <VictimCard key={i} item={item} />
-            ))}
+            <Swiper
+              modules={[Autoplay]}
+              slidesPerView={3}
+              spaceBetween={25}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}
+            >
+              {obituaryData.map((item, i) => (
+                <SwiperSlide key={i}>
+                  <VictimCard item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
         <Footer />
