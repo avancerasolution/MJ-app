@@ -34,35 +34,63 @@ export interface Obituary {
   burialTime: string;
   funeralCeremonyLocation: string;
   image: string;
+  jamatkhana: string;
 }
 
 interface MainContentProps {
   data?: RawObituary[] | null;
 }
 const MainContent: React.FC<MainContentProps> = ({ data }) => {
-  const isTodaysDate = (dateString: string): boolean => {
-    if (!dateString) return false;
+  const shouldShowObituary = (item: RawObituary): boolean => {
+    if (!item) return false;
+    
+    // If burial date or time is "To be announced later", always show
+    if (item.BURIAL_DATE === "To be announced later" || 
+        item.BURIAL_TIME === "To be announced later") {
+      return true;
+    }
     
     const today = new Date();
-  
     
-    const day = today.getDate();
-    const month = today.toLocaleString('default', { month: 'short' });
-    const year = today.getFullYear();
-    
+    // Parse the burial date string (expecting format like "Monday, 13 Oct, 2025")
     try {
-      const dayMatches = dateString.includes(String(day));
-      const monthMatches = dateString.toLowerCase().includes(month.toLowerCase());
-      const yearMatches = dateString.includes(String(year));
+      // Extract parts from the burial date string
+      const dateMatch = item.BURIAL_DATE.match(/(\d+)\s+(\w+),\s+(\d+)/);
+      if (!dateMatch) return true; // If can't parse, show the obituary
       
-      return dayMatches && monthMatches && yearMatches;
+      const day = parseInt(dateMatch[1], 10);
+      const month = dateMatch[2]; // Oct
+      const year = parseInt(dateMatch[3], 10);
+      
+      // Parse the burial time string (expecting format like "3:00 PM")
+      const timeMatch = item.BURIAL_TIME.match(/(\d+):(\d+)\s+(AM|PM)/i);
+      let hour = 0;
+      let minute = 0;
+      
+      if (timeMatch) {
+        hour = parseInt(timeMatch[1], 10);
+        if (timeMatch[3].toUpperCase() === 'PM' && hour < 12) hour += 12;
+        if (timeMatch[3].toUpperCase() === 'AM' && hour === 12) hour = 0;
+        minute = parseInt(timeMatch[2], 10);
+      }
+      
+      // Create a date object for the burial date and time
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthIndex = months.findIndex(m => month.includes(m));
+      
+      if (monthIndex === -1) return true; // If can't parse month, show the obituary
+      
+      const burialDateTime = new Date(year, monthIndex, day, hour, minute);
+      
+      // Show obituary if burial date/time is today or in the future
+      return burialDateTime >= today;
     } catch (error) {
-      console.error("Error checking date:", error, dateString);
-      return false;
+      console.error("Error checking burial date:", error, item.BURIAL_DATE, item.BURIAL_TIME);
+      return true; // If there's any error in parsing, show the obituary
     }
   };
 
-  const filtered = data?.filter(item => isTodaysDate(item.EXPIRED_ON));
+  const filtered = data?.filter(shouldShowObituary);
   
   const obituaryData: Obituary[] =
     filtered?.map((item: RawObituary) => {
@@ -80,11 +108,14 @@ const MainContent: React.FC<MainContentProps> = ({ data }) => {
         burialTime: item.BURIAL_TIME,
         funeralCeremonyLocation: item.FUNERAL_CEREMONY,
         image: item.PHOTO || imaage,
+        jamatkhana: item.JAMATKHANA,
       };
     }) ?? [];
 
 
-  console.log(obituaryData.length);
+
+  console.log("Obituaries to display:", obituaryData);
+  console.log("Filtered from total data entries:", data?.length || 0);
   return (
     <Fragment>
       <div className="MainContent">
@@ -93,29 +124,55 @@ const MainContent: React.FC<MainContentProps> = ({ data }) => {
           {obituaryData.length > 0 && (
             <img src={InnaLillah} alt="InnaLillah" className="InnaLillah" />
           )}
-          <div className="cardss" style={{ height: 'calc(100% - 60px)' }}>
+          <div className="cardss" style={{ 
+            height: 'calc(100% - 60px)',
+            width: '100%',
+            overflow: 'hidden'
+          }}>
             {obituaryData.length > 0 ? (
-              <Swiper
-                modules={[Autoplay]}
-                slidesPerView={3}
-                spaceBetween={25}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                loop={obituaryData.length > 3}
-                slidesPerGroup={1}
-                style={{ width: '100%', height: '100%' }}
-              >
-                {obituaryData.map((item, i) => (
-                  <SwiperSlide 
-                    key={i} 
-                    style={{
-                      width: 'calc((100% - 50px) / 3)', 
-                      height: '500px', 
-                    }}
-                  >
-                    <VictimCard item={item} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+          <Swiper
+  modules={[Autoplay, Pagination]}
+  slidesPerView={1} // ✅ one card visible
+  spaceBetween={0}
+  autoplay={{ delay: 5000, disableOnInteraction: false }}
+  // pagination={{ clickable: true }}
+  loop={true} // ✅ now you can safely loop since only one slide visible
+  style={{
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxSizing: "border-box",
+  }}
+>
+  {obituaryData.map((item, i) => (
+    <SwiperSlide
+      key={i}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <div
+        style={{
+          width: "50vw", // ✅ takes half of TV screen width
+          maxWidth: "900px",
+          background: "#fff",
+          borderRadius: "10px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          overflow: "hidden",
+        }}
+      >
+        <VictimCard item={item} />
+      </div>
+    </SwiperSlide>
+  ))}
+</Swiper>
+
+
             ) : (
               <div style={{
                 width: '100%',
