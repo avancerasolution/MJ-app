@@ -5,12 +5,11 @@ import imaage from "./../../assets/placeholderFuneralimg.jpeg";
 import Header from "./Header";
 import InnaLillah from "./../../assets/InnaLillah.png";
 import VictimCard from "./VictimCard";
-import Footer from "./Footer";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { EventItem } from "./PageHome";
 
 interface RawObituary {
   JAMATKHANA: string;
@@ -39,65 +38,73 @@ export interface Obituary {
 
 interface MainContentProps {
   data?: RawObituary[] | null;
+  duaTimings: EventItem[];
 }
-const MainContent: React.FC<MainContentProps> = ({ data }) => {
+
+const MainContent: React.FC<MainContentProps> = ({ data, duaTimings }) => {
   const shouldShowObituary = (item: RawObituary): boolean => {
     if (!item) return false;
-    
-    // If burial date or time is "To be announced later", always show
-    if (item.BURIAL_DATE === "To be announced later" || 
-        item.BURIAL_TIME === "To be announced later") {
+
+    if (
+      item.BURIAL_DATE === "To be announced later" ||
+      item.BURIAL_TIME === "To be announced later"
+    ) {
       return true;
     }
-    
+
     const today = new Date();
-    
-    // Parse the burial date string (expecting format like "Monday, 13 Oct, 2025")
     try {
-      // Extract parts from the burial date string
       const dateMatch = item.BURIAL_DATE.match(/(\d+)\s+(\w+),\s+(\d+)/);
-      if (!dateMatch) return true; // If can't parse, show the obituary
-      
+      if (!dateMatch) return true;
+
       const day = parseInt(dateMatch[1], 10);
-      const month = dateMatch[2]; // Oct
+      const month = dateMatch[2];
       const year = parseInt(dateMatch[3], 10);
-      
-      // Parse the burial time string (expecting format like "3:00 PM")
+
       const timeMatch = item.BURIAL_TIME.match(/(\d+):(\d+)\s+(AM|PM)/i);
       let hour = 0;
       let minute = 0;
-      
+
       if (timeMatch) {
         hour = parseInt(timeMatch[1], 10);
-        if (timeMatch[3].toUpperCase() === 'PM' && hour < 12) hour += 12;
-        if (timeMatch[3].toUpperCase() === 'AM' && hour === 12) hour = 0;
+        if (timeMatch[3].toUpperCase() === "PM" && hour < 12) hour += 12;
+        if (timeMatch[3].toUpperCase() === "AM" && hour === 12) hour = 0;
         minute = parseInt(timeMatch[2], 10);
       }
-      
-      // Create a date object for the burial date and time
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const monthIndex = months.findIndex(m => month.includes(m));
-      
-      if (monthIndex === -1) return true; // If can't parse month, show the obituary
-      
+
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthIndex = months.findIndex((m) => month.includes(m));
+
+      if (monthIndex === -1) return true;
+
       const burialDateTime = new Date(year, monthIndex, day, hour, minute);
-      
-      // Show obituary if burial date/time is today or in the future
       return burialDateTime >= today;
-    } catch (error) {
-      console.error("Error checking burial date:", error, item.BURIAL_DATE, item.BURIAL_TIME);
-      return true; // If there's any error in parsing, show the obituary
+    } catch {
+      return true;
     }
   };
 
   const filtered = data?.filter(shouldShowObituary);
-  
+
   const obituaryData: Obituary[] =
     filtered?.map((item: RawObituary) => {
       const [firstName, ...rest] = item.NAME.split(" ");
       const lastName = rest.join(" ");
       const numericAge = parseInt(item.AGE, 10);
-      
+
       return {
         firstName,
         lastName,
@@ -112,90 +119,100 @@ const MainContent: React.FC<MainContentProps> = ({ data }) => {
       };
     }) ?? [];
 
-
-
-  console.log("Obituaries to display:", obituaryData);
-  console.log("Filtered from total data entries:", data?.length || 0);
   return (
     <Fragment>
       <div className="MainContent">
-        <Header />
-        <div className="DeathData bg-" style={{ height: 'calc(100vh - 60px)' }}>
+        <Header duaTimings={duaTimings} />
+
+        <div
+          className="DeathData"
+          style={{
+            minHeight: "calc(100vh - 60px)",
+            backgroundColor: "#f4f6f4",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px 10px",
+          }}
+        >
           {obituaryData.length > 0 && (
-            <img src={InnaLillah} alt="InnaLillah" className="InnaLillah" />
+            <img
+              src={InnaLillah}
+              alt="InnaLillah"
+              className="InnaLillah"
+              style={{
+                width: "300px",
+                maxWidth: "80%",
+                marginBottom: "20px",
+              }}
+            />
           )}
-          <div className="cardss" style={{ 
-            height: 'calc(100% - 60px)',
-            width: '100%',
-            overflow: 'hidden'
-          }}>
+
+          <div
+            className="cardss"
+            style={{
+              width: "100%",
+              maxWidth: "1200px",
+              overflow: "hidden",
+            }}
+          >
             {obituaryData.length > 0 ? (
-          <Swiper
-  modules={[Autoplay, Pagination]}
-  slidesPerView={1} // ✅ one card visible
-  spaceBetween={0}
-  autoplay={{ delay: 5000, disableOnInteraction: false }}
-  // pagination={{ clickable: true }}
-  loop={true} // ✅ now you can safely loop since only one slide visible
-  style={{
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxSizing: "border-box",
-  }}
->
-  {obituaryData.map((item, i) => (
-    <SwiperSlide
-      key={i}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-      }}
-    >
-      <div
-        style={{
-          width: "50vw", // ✅ takes half of TV screen width
-          maxWidth: "900px",
-          background: "#fff",
-          borderRadius: "10px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          overflow: "hidden",
-        }}
-      >
-        <VictimCard item={item} />
-      </div>
-    </SwiperSlide>
-  ))}
-</Swiper>
-
-
+              <Swiper
+                modules={[Autoplay, Pagination]}
+                slidesPerView={1}
+                spaceBetween={20}
+                autoplay={{ delay: 7000, disableOnInteraction: false }}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                loop
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingBottom: "30px",
+                }}
+              >
+                {obituaryData.map((item, i) => (
+                  <SwiperSlide
+                    key={i}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <VictimCard item={item} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             ) : (
-              <div style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '20px'
-              }}>
-                <img 
-                  src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXfQsKihUzsUEtI0JF5CseuLZ8jztJ8esEHsgEnqryKYWvvvsR1F9I2YY&s=10"} 
-                  alt="No obituaries available" 
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "20px",
+                }}
+              >
+                <img
+                  src={
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXfQsKihUzsUEtI0JF5CseuLZ8jztJ8esEHsgEnqryKYWvvvsR1F9I2YY&s=10"
+                  }
+                  alt="No obituaries available"
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '80vh',
-                    objectFit: 'contain'
+                    maxWidth: "100%",
+                    maxHeight: "70vh",
+                    objectFit: "contain",
+                    borderRadius: "8px",
                   }}
                 />
               </div>
             )}
           </div>
         </div>
-        {/* <Footer /> */}
       </div>
     </Fragment>
   );

@@ -3,10 +3,18 @@
 import React, { useEffect, useState } from 'react';
 import morning from './../../assets/MorningDua.png'
 import night from './../../assets/NightDua.png'
+import sun from './../../assets/sun.svg'
+import { EventItem } from './PageHome';
 
-const Header = () => {
+interface HeaderProps {
+  duaTimings: EventItem[];
+}
+const Header: React.FC<HeaderProps> = ({ duaTimings }) => {
   const [timeString, setTimeString] = useState('');
   const [dateString, setDateString] = useState('');
+
+  const morningDuaTime = duaTimings.find(dua => dua.name.toLowerCase().includes('morning'))?.time;
+  const eveningDuaTime = duaTimings.find(dua => dua.name.toLowerCase().includes('evening'))?.time;
 
   useEffect(() => {
     const updateDateTime = () => {
@@ -52,10 +60,10 @@ const Header = () => {
 
       <div className="duaa">
         <div className="morningg">
-          <img src={morning} alt="morning" />
+          <img src={sun} alt="morning" />
           <div>
             <span>MORNING DUA TIME</span>
-            <p>05:15 AM</p>
+            <p>{morningDuaTime}</p>
           </div>
         </div>
 
@@ -63,7 +71,7 @@ const Header = () => {
           <img src={night} alt="night" />
           <div>
             <span>EVENING DUA TIME</span>
-            <p>07:00 PM</p>
+            <p>{eveningDuaTime}</p>
           </div>
         </div>
       </div>
